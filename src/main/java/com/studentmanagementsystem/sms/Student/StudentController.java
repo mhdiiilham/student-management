@@ -12,11 +12,18 @@ import java.util.List;
 @Controller
 @EnableJpaRepositories
 public class StudentController {
-    @Autowired private UserService userService;
+    @Autowired private StudentService studentService;
 
     @GetMapping("/students")
-    public String getStudents(@RequestParam(required = false, name = "order-age", defaultValue = "ASC") String orderAge, @RequestParam(required = false, name = "order-name", defaultValue = "ASC") String orderName, Model model) {
-        List<Student> students = userService.getStudents(orderAge, orderName);
+    public String getStudents(
+            @RequestParam(required = false, name = "order-age", defaultValue = "ASC") String orderAge,
+            @RequestParam(required = false, name = "order-name", defaultValue = "ASC") String orderName,
+            @RequestParam(required = false, name = "student-name", defaultValue = "") String studentName,
+            @RequestParam(required = false, name = "student-age", defaultValue = "0") String studentAgeQuery,
+            Model model
+    ) {
+        Integer studentAge = Integer.parseInt(studentAgeQuery);
+        List<Student> students = studentService.getStudents(orderAge, orderName, studentName, studentAge);
         model.addAttribute("students", students);
         return "students";
     }
@@ -29,14 +36,14 @@ public class StudentController {
 
     @PostMapping("/students")
     public String createStudent(Student student, RedirectAttributes re) {
-        userService.createStudent(student);
+        studentService.createStudent(student);
         re.addFlashAttribute("message", "Student student " + student.getName() + " has been created");
         return "redirect:/students";
     }
 
     @DeleteMapping("/students/{number}")
     public String deleteStudent(@PathVariable("number") Integer studentNumber, RedirectAttributes re) {
-        userService.removeStudent(studentNumber);
+        studentService.removeStudent(studentNumber);
         re.addFlashAttribute("message", "success delete student " + studentNumber);
         return "redirect:/students";
     }
@@ -44,7 +51,7 @@ public class StudentController {
     @GetMapping("/student/edit/{number}")
     public String modifyForm(@PathVariable("number") Integer studentNumber, Model model, RedirectAttributes re) {
         try {
-            Student student = userService.getByStudentNumber(studentNumber);
+            Student student = studentService.getByStudentNumber(studentNumber);
             model.addAttribute("student", student);
             System.out.println("student number " + studentNumber);
             return "student_modify_form";
@@ -57,7 +64,7 @@ public class StudentController {
     @PutMapping("/students/{number}")
     public String modifyStudent(@PathVariable("number") Integer studentNumber, Student student, RedirectAttributes re) {
         student.setStudentNumber(studentNumber);
-        userService.modifyStudent(student);
+        studentService.modifyStudent(student);
         re.addFlashAttribute("message", "success modify student with number " + studentNumber);
         return "redirect:/students";
     }

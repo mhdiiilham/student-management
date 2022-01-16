@@ -19,8 +19,8 @@ public class Student {
     @Column(nullable = false, length = 1)
     private String sex;
 
-    @Column(nullable = false, length = 2)
-    private String age;
+    @Column(nullable = false)
+    private Integer age;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(nullable = false, name = "birth_day")
@@ -57,11 +57,11 @@ public class Student {
         this.sex = sex;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class StudentService {
     @Autowired private Repository repo;
     private Repository repo1;
 
-    public List<Student> getStudents(String orderAge, String orderName) {
+    public List<Student> getStudents(String orderAge, String orderName, String name, Integer age) {
         List<Order> orders = new ArrayList<>();
         Direction orderAgeDirection = Direction.ASC;
         Direction orderNameDirection = Direction.ASC;
@@ -26,8 +26,12 @@ public class UserService {
         orders.add(new Order(orderAgeDirection, "age"));
         orders.add(new Order(orderNameDirection, "name"));
 
+        if (age > 0 ) {
+            return repo.getStudents(Sort.by(orders), age);
+        }
 
-        List<Student> students = repo.getStudents(Sort.by(orders));
+
+        List<Student> students = repo.getStudents(Sort.by(orders), name);
         return students;
     }
 
