@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link th:replace="fragments/head"></link>
+</head>
+<body>
+    <div th:replace="fragments/navbar"></div>
+
+
+    <div class="m-5">
+        <a class="btn btn-primary" th:href="@{/student/new}" role="button">Create New Student</a>
+    </div>
+    <div th:if="${message}" class="alert alert-primary" role="alert">
+        [[${message}]]
+    </div>
+    <table class="table m-5">
+        <thead>
+        <tr>
+            <th scope="col">Number</th>
+            <th scope="col">Name</th>
+            <th scope="col">Sex</th>
+            <th scope="col">Age</th>
+            <th scope="col">Birth Day</th>
+            <th scope="col">Class</th>
+            <th scope="col">Enroll Date</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="student : ${students}">
+                <tr>
+                    <td>[[${student.studentNumber}]]</td>
+                    <td>[[${student.name}]]</td>
+                    <td>[[${student.age}]]</td>
+                    <td th:if="${student.sex} == '1'">Male</td>
+                    <td th:if="${student.sex} != '1'">Female</td>
+                    <td>[[${student.birthDay}]]</td>
+                    <td>[[${student.studentClass}]]</td>
+                    <td>[[${student.enrollDate}]]</td>
+                    <td>
+                        <table>
+                            <tr>
+                                <a th:href="@{student/edit/} + ${student.studentNumber}">Edit</a>
+                            </tr>
+                            <tr>
+                                <form class="mr-1" th:action="@{students/} + ${student.studentNumber}" th:method="DELETE">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+    <div th:replace="fragments/scripts"></div>
+</body>
+</html>

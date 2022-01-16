@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link th:replace="fragments/head"></link>
+</head>
+<body>
+<div th:replace="fragments/navbar"></div>
+<div class="m-5">
+    <a class="btn btn-primary" th:href="@{/students}" role="button">Back</a>
+</div>
+<form th:action="@{/students/} + ${student.studentNumber}" th:method="PUT" class="m-5" th:object="${student}">
+    <div class="mb-3">
+        <label for="studentname" class="form-label">Name</label>
+        <input type="text" th:value="${student.name}" th:field="*{name}" class="form-control" id="studentname">
+    </div>
+    <div class="mb-3">
+        <label for="birthdate" class="form-label">Birth Date</label>
+        <input type="date" th:field="*{birthDay}" class="form-control" id="birthdate">
+    </div>
+    <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input type="text" th:field="*{age}" class="form-control" id="age">
+    </div>
+    <div class="mb-3">
+        <label class="input-group-text" for="inputGroupSelect01">Sex</label>
+        <select class="form-select" id="inputGroupSelect01" th:field="*{sex}">
+            <option th:selected="${student.sex == '1'}" value="1" >Male</option>
+            <option th:selected="${student.sex == '0'}" value="0">Female</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="class" class="form-label">Class</label>
+        <input type="text" th:field="*{studentClass}" class="form-control" id="class">
+    </div>
+    <div class="mb-3">
+        <label for="birthdate" class="form-label">Enroll Date</label>
+        <input type="date" th:field="*{enrollDate}" class="form-control" id="birthdate">
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<div th:replace="fragments/scripts"></div>
+</body>
+</html>
