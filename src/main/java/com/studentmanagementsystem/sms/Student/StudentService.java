@@ -55,4 +55,15 @@ public class StudentService {
     public void modifyStudent(Student student) {
         repo.save(student);
     }
+
+    public StudentStatistic getStudentStatistic() {
+        StudentStatistic statistic = new StudentStatistic();
+        Integer totalMale = Math.toIntExact(repo.countBySex("1"));
+        Integer totalFemale = Math.toIntExact(repo.countBySex("0"));
+
+        statistic.setTotalMale(totalMale);
+        statistic.setTotalFemale(totalFemale);
+
+        return  statistic;
+    }
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Student Management System</title>
-    <link th:replace="fragments/head"></link>
+    <link th:replace="fragments/head"/>
 </head>
 <body>
     <div th:replace="fragments/navbar"></div>
@@ -12,13 +12,15 @@
     <div class="m-5">
         <a class="btn btn-primary" th:href="@{/student/new}" role="button">Create New Student</a>
     </div>
+
     <div th:if="${message}" class="alert alert-primary" role="alert">
         [[${message}]]
     </div>
-    <table class="table m-5">
+
+    <table class="table table-bordered m-5">
         <thead>
         <tr>
-            <th scope="col">Number</th>
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Sex</th>
             <th scope="col">Age</th>
@@ -36,19 +38,21 @@
                     <td>[[${student.age}]]</td>
                     <td th:if="${student.sex} == '1'">Male</td>
                     <td th:if="${student.sex} != '1'">Female</td>
-                    <td>[[${student.birthDay}]]</td>
+                    <td th:text="${#temporals.format(student.birthDay, 'dd MMMM yyyy')}"></td>
                     <td>[[${student.studentClass}]]</td>
-                    <td>[[${student.enrollDate}]]</td>
+                    <td th:text="${#temporals.format(student.enrollDate, 'dd MMMM yyyy')}"></td>
                     <td>
                         <table>
-                            <tr>
-                                <a th:href="@{student/edit/} + ${student.studentNumber}">Edit</a>
-                            </tr>
-                            <tr>
-                                <form class="mr-1" th:action="@{students/} + ${student.studentNumber}" th:method="DELETE">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <a class="btn btn-warning" th:href="@{student/edit/} + ${student.studentNumber}">Edit</a>
+                                </tr>
+                                <tr>
+                                    <form class="mr-1" th:action="@{students/} + ${student.studentNumber}" th:method="DELETE">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </tr>
+                            </tbody>
                         </table>
                     </td>
                 </tr>

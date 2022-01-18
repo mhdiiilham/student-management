@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Student Statistic</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link th:replace="fragments/head"/>
+    <title>Student Management System: Statistic</title>
+</head>
+<body>
+<div th:replace="fragments/navbar"></div>
+<div align="center" style="width: 1000px;">
+    <h2>Student Statistic</h2>
+    <div id="chart_div"></div>
+    <div id="piechart" style="width: 900px; height: 500px;"></div>
+</div>
+<script th:inline="javascript">
+            var real_data = /*[[${chartData}]]*/'noValue';
+            $(document).ready(function() {
+                google.charts.load('current', {
+                    packages : [ 'corechart']
+                });
+                google.charts.setOnLoadCallback(drawPieChart);
+            });
+            function drawPieChart() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Sex');
+                data.addColumn('number', 'Count');
+                Object.keys(real_data).forEach(function(key) {
+                    data.addRow([ key, real_data[key] ]);
+                });
+                var options = {
+                    title : 'Student Statistic'
+                };
+                var chart = new google.visualization.PieChart(document
+                        .getElementById('piechart'));
+                chart.draw(data, options);
+            }
+    </script>
+<div th:replace="fragments/scripts"></div>
+</body>
+</html>

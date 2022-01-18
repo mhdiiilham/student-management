@@ -20,4 +20,12 @@ public interface Repository extends JpaRepository<Student, Integer> {
             Sort sort,
             @Param("age") Integer age
     );
+
+    @Query(value = "SELECT COUNT(*) FROM student s WHERE s.sex = 1", nativeQuery = true)
+    Integer countMaleStudents();
+
+    @Query(value = "SELECT COUNT(*) FROM student s WHERE s.sex = 0", nativeQuery = true)
+    Integer countFemaleStudents();
+
+    long countBySex(String sex);
 }

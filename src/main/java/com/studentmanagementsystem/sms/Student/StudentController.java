@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 @EnableJpaRepositories
@@ -67,5 +69,15 @@ public class StudentController {
         studentService.modifyStudent(student);
         re.addFlashAttribute("message", "success modify student with number " + studentNumber);
         return "redirect:/students";
+    }
+
+    @GetMapping("/students/statistic")
+    public String showStudentStatistic(Model model) {
+        StudentStatistic statistic = studentService.getStudentStatistic();
+        Map<String, Integer> graphData = new TreeMap<>();
+        graphData.put("male", statistic.getTotalMale());
+        graphData.put("female", statistic.getTotalFemale());
+        model.addAttribute("chartData", graphData);
+        return "statistic";
     }
 }
