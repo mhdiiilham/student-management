@@ -33,7 +33,7 @@ public class StudentController {
     @GetMapping("/student/new")
     public String newStudentForm(Model model) {
         model.addAttribute("student", new Student());
-        return "studentNewFrom";
+        return "student_few_from";
     }
 
     @PostMapping("/students")
