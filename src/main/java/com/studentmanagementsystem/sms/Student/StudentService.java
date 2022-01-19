@@ -15,24 +15,43 @@ public class StudentService {
     @Autowired private Repository repo;
     private Repository repo1;
 
-    public List<Student> getStudents(String orderAge, String orderName, String name, Integer age) {
+    public List<Student> getStudents(
+            String orderAge,
+            String orderName,
+            String name,
+            Integer age,
+            Integer studentNumber
+    ) {
         List<Order> orders = new ArrayList<>();
         Direction orderAgeDirection = Direction.ASC;
         Direction orderNameDirection = Direction.ASC;
 
-        if (orderAge == "DESC") orderAgeDirection = Direction.DESC;
-        if (orderName == "DESC") orderNameDirection = Direction.DESC;
+        if (orderAge.equals("DESC")) {
+            orderAgeDirection = Direction.DESC;
+        }
+
+        if (orderName.equals("DESC")) {
+            orderNameDirection = Direction.DESC;
+        }
 
         orders.add(new Order(orderAgeDirection, "age"));
         orders.add(new Order(orderNameDirection, "name"));
 
-        if (age > 0 ) {
+        if (studentNumber > 0) {
+            return repo.getStudents(Sort.by(orders), studentNumber.toString());
+
+        }  if (!name.isEmpty() && age == 0) {
+            return repo.getStudentsByName(Sort.by(orders), name);
+
+        } else if (age > 0 && !name.isEmpty()) {
+            return repo.getStudents(Sort.by(orders), name, age);
+
+        } else if (age > 0 ) {
             return repo.getStudents(Sort.by(orders), age);
+
         }
 
-
-        List<Student> students = repo.getStudents(Sort.by(orders), name);
-        return students;
+        return repo.getStudents(Sort.by(orders));
     }
 
     public void createStudent(Student student) {

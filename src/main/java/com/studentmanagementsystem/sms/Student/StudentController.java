@@ -22,31 +22,59 @@ public class StudentController {
             @RequestParam(required = false, name = "order-name", defaultValue = "ASC") String orderName,
             @RequestParam(required = false, name = "student-name", defaultValue = "") String studentName,
             @RequestParam(required = false, name = "student-age", defaultValue = "0") String studentAgeQuery,
+            @RequestParam(required = false, name = "student-number", defaultValue = "0") String studentNumberQuery,
             Model model
     ) {
         Integer studentAge = Integer.parseInt(studentAgeQuery);
-        List<Student> students = studentService.getStudents(orderAge, orderName, studentName, studentAge);
+        Integer studentNumber = Integer.parseInt(studentNumberQuery);
+        List<Student> students = studentService.getStudents(
+                orderAge,
+                orderName,
+                studentName.toLowerCase(),
+                studentAge,
+                studentNumber
+        );
+
+        if (studentNumber > 0) {
+            studentName = "";
+            studentAge = 0;
+        }
+
+        model.addAttribute("orderAge", orderAge);
+        model.addAttribute("orderName", orderName);
         model.addAttribute("students", students);
+        model.addAttribute("studentName", studentName);
+        model.addAttribute("studentAge", studentAge);
+        model.addAttribute("studentNumber", studentNumber);
+        model.addAttribute("studentCount", students.size());
         return "students";
     }
 
     @GetMapping("/student/new")
     public String newStudentForm(Model model) {
         model.addAttribute("student", new Student());
-        return "student_few_from";
+        return "student_new_from";
     }
 
     @PostMapping("/students")
     public String createStudent(Student student, RedirectAttributes re) {
-        studentService.createStudent(student);
-        re.addFlashAttribute("message", "Student student " + student.getName() + " has been created");
-        return "redirect:/students";
+        try {
+            studentService.createStudent(student);
+            re.addFlashAttribute(
+                    "message",
+                    "Student student " + student.getName() + " has been created"
+            );
+            return "redirect:/students";
+        } catch (Exception e) {
+            re.addFlashAttribute("error", e.getMessage());
+            return  "redirect:/student/new";
+        }
     }
 
     @DeleteMapping("/students/{number}")
     public String deleteStudent(@PathVariable("number") Integer studentNumber, RedirectAttributes re) {
         studentService.removeStudent(studentNumber);
-        re.addFlashAttribute("message", "success delete student " + studentNumber);
+        re.addFlashAttribute("message", "success delete student with ID " + studentNumber);
         return "redirect:/students";
     }
 
@@ -65,10 +93,15 @@ public class StudentController {
 
     @PutMapping("/students/{number}")
     public String modifyStudent(@PathVariable("number") Integer studentNumber, Student student, RedirectAttributes re) {
-        student.setStudentNumber(studentNumber);
-        studentService.modifyStudent(student);
-        re.addFlashAttribute("message", "success modify student with number " + studentNumber);
-        return "redirect:/students";
+        try {
+            student.setStudentNumber(studentNumber);
+            studentService.modifyStudent(student);
+            re.addFlashAttribute("message", "success modify student with number " + studentNumber);
+            return "redirect:/students";
+        } catch (Exception err) {
+            re.addFlashAttribute("error", err.getMessage());
+            return "redirect:/students/edit/" + studentNumber;
+        }
     }
 
     @GetMapping("/students/statistic")
